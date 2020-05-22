@@ -13,6 +13,7 @@ Before using XDual, make sure you have the following Python packages installed:
 * [PySAT](https://github.com/pysathq/pysat)
 * [scikit-learn](https://scikit-learn.org/stable/)
 * [XGBoost](https://github.com/dmlc/xgboost/)
+* [ortools](https://developers.google.com/optimization)
 
 Please, follow the installation instructions on these projects' websites to install them properly. (If you spot any other package dependency not listed here, please, let us know.)
 
@@ -114,6 +115,15 @@ $ ./enumerate-all.sh
 ```
 
 The final command should run the experiment the way it was set up for the paper. (**Note** that this will take a while.) The result files will contain the necessary statistics.
+
+## Reproducing CXp's enumeration experimental results
+
+
+```
+$ ./cxp_enumeration.sh
+```
+
+It will create a folder image_temp with four sub-folders: "real6", "fake6", "digit3", and "digit5" to reproduce results.
 
 ## License
 

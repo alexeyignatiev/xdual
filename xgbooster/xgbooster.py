@@ -14,6 +14,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import sklearn
 # print('The scikit-learn version is {}.'.format(sklearn.__version__))
+from .encode_ortools import OREncoder
 
 from  sklearn.preprocessing import OneHotEncoder
 import sys
@@ -247,7 +248,18 @@ class XGBooster(object):
             encoder.test_sample(np.array(test_on))
 
         encoder.save_to(self.encfile)
-
+        
+    def explain_ortools(self, test_on=None):
+        """
+            Encode a tree ensemble trained previously.
+        """
+        encoder_or = OREncoder(self.model, self.feature_names, self.num_class, self)
+        self.enc_or, self.intvs_or, self.imaps_or, self.ivars_or = encoder_or.encode()        
+        nb_mcs = encoder_or.test_sample(np.array(test_on))
+        
+        return nb_mcs
+    
+    
     def explain(self, sample):
         """
             Explain a prediction made for a given sample with a previously

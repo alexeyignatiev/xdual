@@ -62,9 +62,11 @@ if __name__ == '__main__':
             if not xgb:
                 # abduction-based approach requires an encoding
                 xgb = XGBooster(options, from_encoding=options.files[0])
-
-            # explain using anchor or the abduction-based approach
-            expl = xgb.explain(options.explain)
+            if (options.encode  == "ortools"):
+                expl = xgb.explain_ortools(options.explain)
+            else:                  
+                # exp0lain using anchor or the abduction-based approach
+                expl = xgb.explain(options.explain)
 
             # here we take only first explanation if case enumeration was done
             if options.xnum != 1:
