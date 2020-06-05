@@ -141,7 +141,7 @@ $ ./run_intersect.py
 ```
 It will create a folder image_temp with 100 sub-folders for each experiment.
 
-It will create two folders "digit_id_gan_first_x" and "digit_id_gan_last_x" for the `real vs fake', x = 1..50,
+[`real vs fake']. We create two groups of folders "digit_id_gan_first_x" and "digit_id_gan_last_x", x = 1..50,
 with images for the first and the second class, respectively. The correlation results are in each folder (results_exp.txt, line "Percentage:  0.6764705882352942")
 To see correlations:  
 
@@ -150,7 +150,7 @@ To see correlations:
 $ for file in  image_temp/digit_id_partition*/*txt; do grep -H Percentage  "${file}" | tail -n 1;done
 ```
 
-Also, it will create two folders "digit_id_partition_first_x" and "digit_id_partition_last_x" for the `3 vs 5 digits', x = 1..50, with images for the first and the second class, respectively. The correlation results are in each folder (results_exp.txt):
+[3 vs 5 digits'] Also, we create two groups of folders "digit_id_partition_first_x" and "digit_id_partition_last_x", x = 1..50, with images for the first and the second class, respectively. The correlation results are in each folder (results_exp.txt):
 
 To see correlations:  
 
