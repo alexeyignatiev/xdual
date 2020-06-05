@@ -124,13 +124,13 @@ $ ./cxp_prepare.sh
 
 ```
 
-To obtain images form the paper:
+To obtain images used in the paper:
 
 ```
 $ ./cxp_enumeration.sh
 ```
 
-It will create a folder image_temp with four sub-folders: "real6", "fake6", "digit3", and "digit5" to reproduce results.
+This script will create a folder "image_temp" with four sub-folders: "real6", "fake6", "digit3", and "digit5" to reproduce results.
 
 
 
