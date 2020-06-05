@@ -77,6 +77,7 @@ class Options(object):
                                      'minimum',
                                      'nbestims=',
                                      'output=',
+                                     'outputimages=',
                                      'reduce=',
                                      'rounds='
                                      'seed=',
@@ -118,6 +119,8 @@ class Options(object):
                 self.n_estimators = int(arg)
             elif opt in ('-o', '--output'):
                 self.output = str(arg)
+            elif opt in ('--outputimages'):
+                self.outputimages = str(arg)
             elif opt == '--reduce':
                 self.reduce = str(arg)
             elif opt in ('-r', '--rounds'):

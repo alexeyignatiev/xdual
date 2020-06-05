@@ -611,6 +611,7 @@ class OREncoder(object):
         importance = np.zeros(len(solution_o))
         
 
+        file_txt = open("results_{}.txt".format("test"),"w+")            
         
         if (reproduce):    
             map_text = {}
@@ -619,13 +620,13 @@ class OREncoder(object):
     
                 image_dir = "./image_temp/"
                 ensure_dir(image_dir)
-                if (self.optns.output == ''):
-                    image_dir = "./image_temp/{}/".format(random.randint(0, 10000000))
+                if (self.optns.outputimages == ''):
+                    image_dir = "{}/{}/".format(image_dir, random.randint(0, 10000000))
                 else:
-                    image_dir = "./image_temp/{}/".format(self.xgb.options.output)
-                    
+                    image_dir = "{}/{}/".format(image_dir, self.xgb.options.outputimages.replace("/","_"))
                 ensure_dir(image_dir)
-            
+                file_txt.close()
+                file_txt = open("{}results_{}.txt".format(image_dir,"exp"),"w+")              
                 
                 suf = "results_{}".format("")#"gan"#
                 solution_o_r = solution_o.reshape((side,side))
@@ -655,6 +656,13 @@ class OREncoder(object):
                 expl, scores = shap_call(self.xgb, sample=sample, nb_features_in_exp=side*side, getscores = True, silent = True)
                 expl_image = np.zeros((side*side))
                 expl_image[expl] = np.abs(scores)
+                #print(expl_image)
+                s  = np.array_str(expl_image, max_line_width =1)
+                file_txt.write(s)
+                top = 50
+                expl_image_shap =  expl_image.copy()
+                expl_top = (np.argsort(expl_image_shap))[-top:]
+                                
                 expl_image  = expl_image.reshape((side,side))
                 print("done")
 
@@ -741,6 +749,7 @@ class OREncoder(object):
             
             if status == cp_model.OPTIMAL:
                 solution, sample_internal, sample_internal_feat, block, block_str = self.get_solution(self.solver, hypos_feat)
+                file_txt.write(' '.join(block_str) + "\n")                
                 scores, csum =  self.get_score(sample_internal)
                 
                 round_csum = []
@@ -764,7 +773,7 @@ class OREncoder(object):
                 if (reproduce):
                     #print(cnt)
 
-                    if  (cnt %100 == 0) or (obj < prev_obj):
+                    if  (cnt %50 == 0) or (obj < prev_obj):
                         index =  len(block) 
                         if (obj < prev_obj):
                             index =  len(prev_block)
@@ -827,6 +836,37 @@ class OREncoder(object):
                             #print(heat_r)
                             #exit()
                             heat_all_r = (heat_all + heat).reshape((side,side))
+                            if (cnt > 0):
+                                heat_all_r_now  = heat_all + heat
+                                heat_all_r_bool = np.asarray(heat_all_r_now.copy())
+                                heat_all_r_bool[heat_all_r_now > 0] = 1
+                               
+                                total_fire = int(np.sum(heat_all_r_bool))
+                                #print(total_fire)
+                                
+                                heat_top = np.sort((np.argsort(heat_all_r_bool))[-total_fire:])
+                                
+                                expl_top = np.sort((np.argsort(expl_image_shap))[-total_fire:])
+                            
+                           
+                                #print(expl_image_shap[expl_top])
+                                #print(heat_all_r_now[heat_top])
+                                #print(expl_top)
+                                #print(heat_top)
+                                intr = len(list(set(expl_top) & set(heat_top)))
+                                #print("intersect", )
+                                #exit()
+                                file_txt.write("shap top index: {}\n".format(expl_top))
+                                file_txt.write("shap top value: {}\n".format(expl_image_shap[expl_top]))
+                                file_txt.write("cs top index: {}\n".format(heat_top))
+                                file_txt.write("cs top value: {}\n".format(heat_all_r_now[heat_top]))
+
+                                file_txt.write("Total: {}\n".format(total_fire))
+                                file_txt.write("Intersect: {}\n".format(intr))
+                                file_txt.write("Percentage:  {}\n".format(intr/total_fire))
+                                file_txt.write("{} {} {}\n".format(total_fire, intr, intr/total_fire))
+
+                            
                             plt.close('all')
                             fig = plt.figure()                            
                             plt.imshow(heat_all_r/(np.max(heat_all_r)), cmap='hot')
@@ -846,7 +886,7 @@ class OREncoder(object):
                 #print(heat)
                 #exit()
 
-                if (cnt > max_mcses):
+                if (cnt >= max_mcses):
                     break
 
                 #print(obj, prev_obj)
@@ -878,6 +918,7 @@ class OREncoder(object):
             cnt = cnt + 1       
             print(".", end = "", flush=True) 
 
+        file_txt.close()
         print("\n-->Finished enumeration: {} sec".format(resource.getrusage(resource.RUSAGE_CHILDREN).ru_utime + \
                     resource.getrusage(resource.RUSAGE_SELF).ru_utime - timer1))
 
