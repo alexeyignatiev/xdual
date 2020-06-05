@@ -134,10 +134,10 @@ It will create a folder image_temp with four sub-folders: "real6", "fake6", "dig
 
 
 
-To run correlation experiment:
+To run the correlation experiment:
 
 ```
-$ ./run_intersect.py.sh
+$ ./run_intersect.py
 ```
 It will create a folder image_temp with 100 sub-folders for each experiment.
 
